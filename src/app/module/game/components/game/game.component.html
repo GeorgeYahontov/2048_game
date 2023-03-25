@@ -1,0 +1,37 @@
+<div class="game-container">
+  <div class="grid-container">
+    <div class="grid-row">
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+    </div>
+    <div class="grid-row">
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+    </div>
+    <div class="grid-row">
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+    </div>
+    <div class="grid-row">
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell"></div>
+    </div>
+
+    <div class="items">
+      <div class="item" *ngFor="let item of gameService.items"
+           [ngStyle]="getStyles(item)">
+        <div class="item-title">{{item.value}}</div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
