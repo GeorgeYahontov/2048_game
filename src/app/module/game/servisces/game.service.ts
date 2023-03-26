@@ -44,7 +44,7 @@ export class GameService {
     dimY: 'col' | 'row' = 'col',
     reverse:boolean = false
    ){
-    if (!this.canIMove(dimX)){
+    if (this.theEnd || !this.canIMove(dimX, false, reverse)){
       return;
     }
     this.clearDeletedItems();
@@ -108,26 +108,51 @@ export class GameService {
   }
 
   private thisIsTheEnd(){
-    return this.canIMove('row') || this.canIMove('col');
+    return !this.canIMove('row') && !this.canIMove('col');
   }
 
-  private canIMove(dir: 'row' | 'col'){
+  private canIMove(dimX: 'row' | 'col', skipDir = true, forward = false){
+    const dimY = dimX === 'row' ? 'col': 'row';
     for (let x = 1; x <= this.size; x++){
-      const items = this.items.filter(item=> !item.isOnDelete && item[dir] === x)
-
+      const items = this.items
+        .filter(item => !item.isOnDelete && item[dimX] === x)
+        .sort(((a,b) => a[dimY] - b[dimY]))
       if (items.length !== this.size){
-        return true;
+        if (skipDir){
+          return true;
+        }
+        const length = items.length;
+        const lockedPositions: number[] = []
+
+          const start = forward ? this.size + 1 - length : 1;
+          const end = forward ? this.size: length;
+          for (let i = start; i <= end; i++){
+            lockedPositions.push(i)
+          }
+          if (items.find(item => !lockedPositions.includes(item[dimY]))){
+            return true;
+          }
       }
 
       let prevValue = 0;
+
       for (const item of items){
         if (item.value === prevValue){
-          prevValue = item.value;
+          return true
         }
+          prevValue = item.value;
       }
     }
     return false
   }
+/*  calculatePositions(items: Item[], forward: boolean, size: number): number[] {
+    const positions = Array.from({ length: items.length }, (_, i) => {
+      const index = forward ? i + 1 : size + 1 - items.length + i;
+      return index;
+    });
+
+    return positions;
+  }*/
 
   private generateAvailableCells(){
     for (let row = 1; row <= this.size; row++){
